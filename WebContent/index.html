@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+                    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script src="offline/jquery-latest.js"></script>
+<link rel="stylesheet" href="offline/qunit.css" type="text/css"
+	media="screen" />
+<script type="text/javascript" src="offline/qunit.js"></script>
+
+<script>/* 		test("", functio) */
+	$(document).ready(function() {
+		
+		var score = function(line) {
+			if (line == "XXXXXXXXXXXX") {
+				return 300;
+			}
+			var score = 0;
+			for(var i = 0; i < line.length; i++) {
+				if(line[i] != "-" && line[i] != "/" && line[i] != "X" && line[i+1] != "/") {
+					score += parseInt(line[i]);
+				}
+				if (line[i] === "/") {
+					// 5/5..
+					score += 10;
+					score += parseInt(line[i+1])
+					if (i+1 == line.length - 1) {
+						score -= parseInt(line[i+1]);
+					}
+				}
+				if (line[i] === "X") {
+					score += 10;
+				}
+			} 
+			return score;
+		};
+
+ 		test("Should handle full strike line", function() {
+ 			equal(score("XXXXXXXXXXXX"), 300);
+ 		});
+ 		
+ 		test("Should handle a very bad gamer", function() {
+ 			equal(score("-------------------"), 0);
+ 			equal(score("1------------------"), 1);
+ 			equal(score("11-----------------"), 2);
+ 			equal(score("111----------------"), 3);
+ 		});
+ 		
+ 		test("Handle correclty simple spare", function() {
+ 			equal(score("5/1----------------"), 12);
+ 		});		
+ 		
+ 		test("Handle correclty simple strike", function() {
+ 			equal(score("X----------------"), 10);
+ 		});		
+
+ 		
+ 		test("Should handle a line of spares", function() {
+ 			equal(score("5/5/5/5/5/5/5/5/5/5/5"), 150);
+ 		});
+ 		
+ 		test("When missing the second try of a frame, the score is equals to the first frame", function() {
+ 			equal(score("9-9-9-9-9-9-9-9-9-9-"), 90);
+ 			equal(score("9-8-9-9-9-9-9-9-9-9-"), 89);
+ 		});
+
+ 		test("When missing the first try of a frame, the score is equals to the second frame", function() {
+ 			equal(score("-9-9-9-9-9-9-9-9-9-9"), 90);
+ 		});
+	});
+</script>
+
+</head>
+<body>
+	<h1 id="qunit-header">QUnit example</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture">test markup, will be hidden</div>
+</body>
+</html>
